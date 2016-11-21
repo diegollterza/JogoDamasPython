@@ -1,12 +1,12 @@
 __author__ = 'Briane'
-import Tabuleiro
-import Casa
-import Peca
+from Tabuleiro import Tabuleiro
+from Casa import Casa
+from Peca import Peca
 
 import pygame
 
 class viewTabuleiro:
-    tabuleiro = Tabuleiro
+    tabuleiro = Tabuleiro()
     # Define algumas cores
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -24,7 +24,7 @@ class viewTabuleiro:
         pygame.init()
 
         # Largura e altura da tela
-        WINDOW_SIZE = [725, 725]
+        WINDOW_SIZE = [640, 640]
         screen = pygame.display.set_mode(WINDOW_SIZE)
 
         # Titulo
@@ -44,8 +44,8 @@ class viewTabuleiro:
                     # Usuario clica no mouse. Pega posicao
                     pos = pygame.mouse.get_pos()
                     #Converte coordenadas x,y para coordenadas da tela
-                    column = pos[0] // (Casa.getLargura())
-                    row = pos[1] // (Casa.getAltura())
+                    column = pos[0] // (Casa().getLargura())
+                    row = pos[1] // (Casa().getAltura())
                     print("Click ", pos, "Grid coordinates: ", row, column)
 
             # background
@@ -55,39 +55,39 @@ class viewTabuleiro:
 
             # Desenha os quadrinhos
             for row in range(self.tabuleiro.getRows()):
-                for column in range(Tabuleiro.getColumns()):
+                for column in range(self.tabuleiro.getColumns()):
                     #Seta a cor das pecas
                     if (row + column) % 2 == 0:
-                        self.tabuleiro.Tabuleiro.getGrid()[row][column].Casa.getPeca().setCor(self.WHITE)
+                        self.tabuleiro.getGrid[row][column].getPeca().setCor(self.WHITE)
                     else:
-                        self.tabuleiro.Tabuleiro.getGrid()[row][column].Casa.getPeca().setCor(self.BLACK)
+                        self.tabuleiro.getGrid[row][column].getPeca().setCor(self.BLACK)
                     #desenha as pecas
                     pygame.draw.rect(screen,
-                                         self.tabuleiro.Tabuleiro.getGrid()[row][column].Casa.getPeca().getCor(),
-                                         [Casa.getLargura() * column,
-                                          Casa.getAltura() * row,
-                                          Casa.getLargura(),
-                                          Casa.getAltura()])
+                                         self.tabuleiro.getGrid[row][column].getPeca().getCor(),
+                                         [Casa().getLargura() * column,
+                                          Casa().getAltura() * row,
+                                          Casa().getLargura(),
+                                          Casa().getAltura()])
 
                     #Preenche com pecas os quadros
-                    if self.tabuleiro.getGrid()[row][column].Casa.getPeca().getCor() == self.WHITE and (row < 3):
+                    if self.tabuleiro.getGrid[row][column].getPeca().getCor() == self.WHITE and (row < 3):
                         #cada quadro tem 90px, entao pegamos a coordenada (x,y) e multiplicamos pelo valor do lado do quadrado
                         # para obtermos a posicao que a peca deve ficar
-                        screen.blit(self.PecaPreta, (Casa.getLargura() * column+3, Casa.getAltura() * row+3))
+                        screen.blit(self.PecaPreta, (Casa().getLargura() * column+3, Casa().getAltura() * row+3))
                         #Esse +3 eh apenas pra peca nao ficar colada com o canto do quadrado
                         #serve de margem
                         #marca a casa como ocupada
-                        self.tabuleiro.getGrid()[row][column].Casa.getPeca().setOcupado()
+                        self.tabuleiro.getGrid[row][column].getPeca().setOcupado()
 
                     #Preenche com pecas os quadros
-                    if self.tabuleiro.getGrid()[row][column].Casa.getPeca().getCor() == self.WHITE and (row > 4):
+                    if self.tabuleiro.getGrid[row][column].getPeca().getCor() == self.WHITE and (row > 4):
                         #cada quadro tem 90px, entao pegamos a coordenada (x,y) e multiplicamos pelo valor do lado do quadrado
                         # para obtermos a posicao que a peca deve ficar
-                        screen.blit(self.PecaBranca, (Casa.getLargura() * column+3, Casa.getAltura() * row+3))
+                        screen.blit(self.PecaBranca, (Casa().getLargura() * column+3, Casa().getAltura() * row+3))
                         #Esse +3 eh apenas pra peca nao ficar colada com o canto do quadrado
                         #serve de margem
                         #marca a casa como ocupada
-                        self.tabuleiro.getGrid()[row][column].Casa.getPeca().setOcupado()
+                        self.tabuleiro.getGrid[row][column].getPeca().setOcupado()
 
             # Limite de 60 frames por segundo
             clock.tick(60)

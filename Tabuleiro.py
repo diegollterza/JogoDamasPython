@@ -1,27 +1,22 @@
 import pygame
-import Casa
+from Casa import Casa
 
 
 class Tabuleiro:
-    grid = []
     rows = 8
     columns = 8
 
-
+    def __init__(self):
+        self.grid = [[Casa() for j in range(self.rows)] for i in range(self.columns)]
     def getRows(self):
-        return self.rows.get()
+        return self.rows
 
     def getColumns(self):
-        return self.columns.get()
+        return self.columns
 
     @property
     def getGrid(self):
-        #Criando o Array
-        for row in range(self.rows):
-            self.grid.append([])
-            for column in range(self.columns):
-                self.grid[row].append(Casa) #Guh, aqui que eu me compliquei, tenho duvidas sobre como fazer esse array receber um obj da classe Casa e ser de duas dimensoes
-        return self.grid.get()
+        return self.grid
 
 
 

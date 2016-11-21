@@ -5,14 +5,17 @@ class Peca:
     Dama = False #promove a peca para dama
 
     def setCor(self,cor):
-        self.Cor.set(cor)
+        self.Cor = cor
 
     def getCor(self):
-        return self.Cor.get()
+        return self.Cor
 
     def promover(self):
-        self.Dama.set(True)
+        self.Dama = True;
 
+    def setOcupado(self):
+        self.ocupado = True;
+    
 
 
 
