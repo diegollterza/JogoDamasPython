@@ -4,10 +4,14 @@ class Casa:
     peca = Peca()
     largura = 80
     altura = 80
-    ocupado = False
+    Cor = None
+    WHITE = 1
+    BLACK = 2
+    NONE = 0
+    valor = 0
 
     def setPeca(self,peca):
-        self.peca.set(peca)
+        self.peca = peca
 
     def getPeca(self):
         return self.peca
@@ -18,10 +22,14 @@ class Casa:
     def getLargura(self):
         return self.largura
 
-    def setOcupado(self, ocupado):
-        self.ocupado = ocupado
+    def setCor(self,cor):
+        self.Cor = cor
 
-    def isOcupado(self):
-        return self.ocupado
+    def getCor(self):
+        return self.Cor
 
+    def setValor(self, valor):
+        self.valor = valor
 
+    def getValor(self):
+        return self.valor
