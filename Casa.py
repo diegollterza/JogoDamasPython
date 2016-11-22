@@ -2,8 +2,8 @@ from Peca import Peca
 
 class Casa:
     peca = Peca()
-    largura = 80
-    altura = 80
+    largura = 83
+    altura = 83
     Cor = None
     WHITE = 1
     BLACK = 2

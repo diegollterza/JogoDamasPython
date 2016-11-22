@@ -1,4 +1,5 @@
 __author__ = 'Briane'
+
 from Tabuleiro import Tabuleiro
 from Casa import Casa
 from Peca import Peca
@@ -29,7 +30,7 @@ class viewTabuleiro:
         pygame.init()
 
         # Largura e altura da tela
-        WINDOW_SIZE = [640, 640]
+        WINDOW_SIZE = [8*83, 8*83]
         screen = pygame.display.set_mode(WINDOW_SIZE)
 		
         # Titulo
@@ -40,20 +41,7 @@ class viewTabuleiro:
 
         clock = pygame.time.Clock()
 
-
-        for row in range(self.tabuleiro.getRows()):
-            for column in range(self.tabuleiro.getColumns()):
-                if (row + column) % 2 == 0:
-                    self.tabuleiro.getGrid[row][column].setCor(self.WHITE)
-                    if row < 3:
-                        self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
-                    if row > 4:
-                        self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
-                else:
-                    self.tabuleiro.getGrid[row][column].setCor(self.BLACK)
-
-
-        # -------- Recebe os movimentos do usuario -----------
+        #iniciando o gameLoop e capturando os clicks do mouse
         while not done:
             for event in pygame.event.get():  # Usuario faz algo
                 if event.type == pygame.QUIT:  # Se clicar em fechar
@@ -65,29 +53,32 @@ class viewTabuleiro:
                     column = pos[0] // (Casa().getLargura())
                     row = pos[1] // (Casa().getAltura())
                     print("Click ", pos, "Grid coordinates: ", row, column)
-			
+			        
+                    #handler do mouse_click para movimentar as pecas / implementar as regras de jogo
+                    #movimento das pecas brancas
                     if self.white_turn:
+                        #primeiro click do mouse, seleciona a peca a ser movimentada
                         if self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE and self.first_click:
                             self.last_cor = self.tabuleiro.getGrid[row][column].getCor()
                             self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
                             self.last_row = row
                             self.last_column = column
                             self.first_click = False
+                        #segundo click do mouse, tenta uma jogada
                         elif not self.first_click:
+                            #jogada simples sem obstrucao nem comer peca
                             if row == self.last_row - 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
                                 if column == self.last_column - 1 or column == self.last_column + 1:
                                     self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
                                     self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
                                     self.white_turn = False
-
+                            #verifica a possibilidade de comer a peca adversaria
                             if row == self.last_row - 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
-
                                 if column == self.last_column - 2:
                                     self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
                                     self.tabuleiro.getGrid[self.last_row - 1][self.last_column - 1].setValor(Casa().NONE)
                                     self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
                                     self.white_turn = False
-
                                 if column == self.last_column + 2:
                                     self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
                                     self.tabuleiro.getGrid[self.last_row - 1][self.last_column + 1].setValor(Casa().NONE)
@@ -98,7 +89,7 @@ class viewTabuleiro:
                             self.tabuleiro.getGrid[self.last_row][self.last_column].setCor(self.last_cor)
                     
 
-
+                    #movimento das pecas pretas
                     else:
                         if self.tabuleiro.getGrid[row][column].getValor() == Casa().BLACK and self.first_click:
                             self.last_cor = self.tabuleiro.getGrid[row][column].getCor()
@@ -131,10 +122,11 @@ class viewTabuleiro:
                                     self.white_turn = True
 
                             self.first_click = True
-                            self.tabuleiro.getGrid[self.last_row][self.last_column].setCor(self.last_cor)   
-            
-
-                            
+                            self.tabuleiro.getGrid[self.last_row][self.last_column].setCor(self.last_cor) 
+                              
+            if self.first_click:
+                self.tabuleiro.redraw()
+            self.tabuleiro.hasToEat(self.white_turn)          
             # background
             screen.fill(self.BLACK)
 
@@ -149,7 +141,7 @@ class viewTabuleiro:
                                           Casa().getLargura(),
                                           Casa().getAltura()])
 
-                    #Preenche com pecas os quadros
+                    #redraw das pecas
 
                     if self.tabuleiro.getGrid[row][column].getValor() == Casa().BLACK:
     					screen.blit(self.PecaPreta, (Casa().getLargura() * column, Casa().getAltura() * row))
