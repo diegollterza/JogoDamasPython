@@ -14,6 +14,10 @@ class viewTabuleiro:
     RED = (255, 0, 0)
     first_click = True
     white_turn = True
+    last_row = -1
+    last_column = -1
+    last_cor = None
+    white_turn = True;
 
     #Definindo imagens
     QuadroBranco = pygame.image.load("./data/QuadroBranco.jpg")
@@ -63,12 +67,24 @@ class viewTabuleiro:
                     row = pos[1] // (Casa().getAltura())
                     print("Click ", pos, "Grid coordinates: ", row, column)
 			
-                    if self.white_turn and self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE:
-                        if self.first_click:
-                         self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
-                         self.first_click = False
-                
+                    if self.white_turn:
+                        if self.white_turn and self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE and self.first_click:
+                            self.last_cor = self.tabuleiro.getGrid[row][column].getCor()
+                            self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
+                            self.last_row = row
+                            self.last_column = column
+                            self.first_click = False
+                        elif not self.first_click:
+                            if row == self.last_row - 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
+                                if column == self.last_column - 1 or column == self.last_column + 1:
+                                    self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
+                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                    self.white_turn = False
+                            self.first_click = True
+                            self.tabuleiro.getGrid[self.last_row][self.last_column].setCor(self.last_cor)
+                        
 
+                            
             # background
             screen.fill(self.BLACK)
 
@@ -86,9 +102,9 @@ class viewTabuleiro:
                     #Preenche com pecas os quadros
 
                     if self.tabuleiro.getGrid[row][column].getValor() == Casa().BLACK:
-    					screen.blit(self.PecaPreta, (Casa().getLargura() * column+3, Casa().getAltura() * row+3))
+    					screen.blit(self.PecaPreta, (Casa().getLargura() * column, Casa().getAltura() * row))
                     if self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE:
-    					screen.blit(self.PecaBranca, (Casa().getLargura() * column+3, Casa().getAltura() * row+3))
+    					screen.blit(self.PecaBranca, (Casa().getLargura() * column, Casa().getAltura() * row))
 
             # Limite de 60 frames por segundo
             clock.tick(60)
