@@ -17,7 +17,6 @@ class viewTabuleiro:
     last_row = -1
     last_column = -1
     last_cor = None
-    white_turn = True;
 
     #Definindo imagens
     QuadroBranco = pygame.image.load("./data/QuadroBranco.jpg")
@@ -68,7 +67,7 @@ class viewTabuleiro:
                     print("Click ", pos, "Grid coordinates: ", row, column)
 			
                     if self.white_turn:
-                        if self.white_turn and self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE and self.first_click:
+                        if self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE and self.first_click:
                             self.last_cor = self.tabuleiro.getGrid[row][column].getCor()
                             self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
                             self.last_row = row
@@ -80,9 +79,60 @@ class viewTabuleiro:
                                     self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
                                     self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
                                     self.white_turn = False
+
+                            if row == self.last_row - 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
+
+                                if column == self.last_column - 2:
+                                    self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
+                                    self.tabuleiro.getGrid[self.last_row - 1][self.last_column - 1].setValor(Casa().NONE)
+                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                    self.white_turn = False
+
+                                if column == self.last_column + 2:
+                                    self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
+                                    self.tabuleiro.getGrid[self.last_row - 1][self.last_column + 1].setValor(Casa().NONE)
+                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                    self.white_turn = False
+
                             self.first_click = True
                             self.tabuleiro.getGrid[self.last_row][self.last_column].setCor(self.last_cor)
-                        
+                    
+
+
+                    else:
+                        if self.tabuleiro.getGrid[row][column].getValor() == Casa().BLACK and self.first_click:
+                            self.last_cor = self.tabuleiro.getGrid[row][column].getCor()
+                            self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
+                            self.last_row = row
+                            self.last_column = column
+                            self.first_click = False
+
+                        elif not self.first_click:
+
+                            if row == self.last_row + 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
+
+                                if column == self.last_column - 1 or column == self.last_column + 1:
+                                    self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
+                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                    self.white_turn = True
+
+                            if row == self.last_row + 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
+
+                                if column == self.last_column - 2:
+                                    self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
+                                    self.tabuleiro.getGrid[self.last_row + 1][self.last_column - 1].setValor(Casa().NONE)
+                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                    self.white_turn = True
+
+                                if column == self.last_column + 2:
+                                    self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
+                                    self.tabuleiro.getGrid[self.last_row + 1][self.last_column + 1].setValor(Casa().NONE)
+                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                    self.white_turn = True
+
+                            self.first_click = True
+                            self.tabuleiro.getGrid[self.last_row][self.last_column].setCor(self.last_cor)   
+            
 
                             
             # background
