@@ -13,11 +13,14 @@ class viewTabuleiro:
     WHITE = (255, 255, 255)
     GREEN = (0, 255, 0)
     RED = (255, 0, 0)
+    
     first_click = True
     white_turn = True
     last_row = -1
     last_column = -1
     last_cor = None
+    reEating = False
+    last_eated = [0,0]
 
     #Definindo imagens
     QuadroBranco = pygame.image.load("./data/QuadroBranco.jpg")
@@ -57,32 +60,39 @@ class viewTabuleiro:
                     #handler do mouse_click para movimentar as pecas / implementar as regras de jogo
                     #movimento das pecas brancas
                     if self.white_turn:
-                        #primeiro click do mouse, seleciona a peca a ser movimentada
-                        if self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE and self.first_click:
-                            self.tabuleiro.hasToEat(self.white_turn)
-                            self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
-                            self.last_row = row
-                            self.last_column = column
-                            self.first_click = False
-                    
+                        if self.first_click:
+                            if not self.reEating:
+                                if self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE and self.first_click:
+                                    self.tabuleiro.hasToEat(self.white_turn)
+                                    self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
+                                    self.last_row = row
+                                    self.last_column = column
+                                    self.first_click = False
+                            else:
+                                if row == self.last_eated[0] and column == self.last_eated[1]:
+                                    self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
+                                    self.last_row = row
+                                    self.last_column = column
+                                    self.first_click = False
+                                    self.tabuleiro.canContinueEating(row, column, self.white_turn)
 
-                        elif not self.first_click:
-                            if self.tabuleiro.hasToEat(self.white_turn):
-                                if row == self.last_row - 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
-
-                                    if column == self.last_column - 2 and self.tabuleiro.getGrid[self.last_row-1][self.last_column-1].getValor() == Casa().BLACK:
-                                        self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
-                                        self.tabuleiro.getGrid[self.last_row -1][self.last_column - 1].setValor(Casa().NONE)
-                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
-                                        if not self.tabuleiro.canContinueEating:
-                                            self.white_turn = False
-
-                                    if column == self.last_column + 2 and self.tabuleiro.getGrid[self.last_row-1][self.last_column+1].getValor() == Casa().BLACK:
-                                        self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
-                                        self.tabuleiro.getGrid[self.last_row - 1][self.last_column + 1].setValor(Casa().NONE)
-                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
-                                        if not self.tabuleiro.canContinueEating:
-                                            self.white_turn = False
+                        else:
+                            if self.tabuleiro.hasToEat(self.white_turn) and not self.reEating:
+                                if self.tabuleiro.eating(self.last_row,self.last_column,row,column,self.white_turn):
+                                    if self.tabuleiro.canContinueEating(row, column, self.white_turn):
+                                        self.reEating = True
+                                        self.last_eated[0] = row
+                                        self.last_eated[1] = row
+                                    else:
+                                        self.white_turn = False
+                            elif self.reEating:
+                                if self.tabuleiro.eatingAfterEating(self.last_row,self.last_column,row,column,self.white_turn):
+                                    if self.tabuleiro.canContinueEating(row, column, self.white_turn):
+                                        self.last_eated[0] = row
+                                        self.last_eated[1] = row
+                                    else:
+                                        self.white_turn = False
+                                        self.reEating = False
                             else:
                                 if row == self.last_row - 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
                                     if column == self.last_column - 1 or column == self.last_column + 1:
@@ -95,29 +105,40 @@ class viewTabuleiro:
 
                     #movimento das pecas pretas
                     else:
-                        if self.tabuleiro.getGrid[row][column].getValor() == Casa().BLACK and self.first_click:
-                            self.tabuleiro.hasToEat(self.white_turn)
-                            self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
-                            self.last_row = row
-                            self.last_column = column
-                            self.first_click = False
-                    
+                        if self.first_click:
+                            if not self.reEating:
+                                if self.tabuleiro.getGrid[row][column].getValor() == Casa().BLACK and self.first_click:
+                                    self.tabuleiro.hasToEat(self.white_turn)
+                                    self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
+                                    self.last_row = row
+                                    self.last_column = column
+                                    self.first_click = False
+                            else:
+                                if row == self.last_eated[0] and column == self.last_eated[1]:
+                                    self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
+                                    self.last_row = row
+                                    self.last_column = column
+                                    self.first_click = False
+                                    self.tabuleiro.canContinueEating(row, column, self.white_turn)
 
-                        elif not self.first_click:
-                            if self.tabuleiro.hasToEat(self.white_turn):
-                                if row == self.last_row + 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
-
-                                    if column == self.last_column - 2 and self.tabuleiro.getGrid[self.last_row+1][self.last_column-1].getValor() == Casa().WHITE:
-                                        self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
-                                        self.tabuleiro.getGrid[self.last_row + 1][self.last_column - 1].setValor(Casa().NONE)
-                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                        else:
+                            if self.tabuleiro.hasToEat(self.white_turn) and not self.reEating:
+                                if self.tabuleiro.eating(self.last_row,self.last_column,row,column,self.white_turn):
+                                    if self.tabuleiro.canContinueEating(row, column, self.white_turn):
+                                        self.reEating = True
+                                        self.last_eated[0] = row
+                                        self.last_eated[1] = row
+                                    else:
                                         self.white_turn = True
-
-                                    if column == self.last_column + 2 and self.tabuleiro.getGrid[self.last_row+1][self.last_column+1].getValor() == Casa().WHITE:
-                                        self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
-                                        self.tabuleiro.getGrid[self.last_row + 1][self.last_column + 1].setValor(Casa().NONE)
-                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                            elif self.reEating:
+                                if self.tabuleiro.eatingAfterEating(self.last_row,self.last_column,row,column,self.white_turn):
+                                    if self.tabuleiro.canContinueEating(row, column, self.white_turn):
+                                        self.reEating = True
+                                        self.last_eated[0] = row
+                                        self.last_eated[1] = row
+                                    else:
                                         self.white_turn = True
+                                        self.reEating = False    
                             else:
                                 if row == self.last_row + 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
                                     if column == self.last_column - 1 or column == self.last_column + 1:

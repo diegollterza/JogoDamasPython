@@ -61,7 +61,7 @@ class Tabuleiro:
 
 
     def redraw(self):
-        for row, column in range(self.rows), range(self.column):
+        for row in range(self.rows):
             for column in range(self.columns):
                 if (row + column) % 2 == 0:
                     self.grid[row][column].setCor(self.WHITE)
@@ -83,37 +83,92 @@ class Tabuleiro:
         return _count
 
 
-    def canContinueEating(self, white_turn):
-        _flag = False
+    def canContinueEating(self, row, column, white_turn):
         if white_turn:
             _casa = Casa(Casa().WHITE)
-        else:
+        else:    
             _casa = Casa(Casa().BLACK)
-
-        for row in range(self.rows):
-            for column in range(self.columns):
-                if white_turn:
-                    if row > 1 and column > 1 and self.grid[row][column].getValor() == _casa.getValor() and self.grid[row - 1][column - 1].getValor() == _casa.getValorInverso():
-                        if self.grid[row-2][column - 2].getValor() == Casa().NONE:
-                            self.grid[row][column].setCor(self.RED)
-                            _flag = True
-                    if row > 1 and column < 6 and self.grid[row][column].getValor() == _casa.getValor() and self.grid[row - 1][column + 1].getValor() == _casa.getValorInverso():
-                        if self.grid[row-2][column + 2].getValor() == Casa().NONE:
-                            self.grid[row][column].setCor(self.RED)
-                            _flag = True
-                    if row < 6 and column > 1 and self.grid[row][column].getValor() == _casa.getValor() and self.grid[row + 1][column - 1].getValor() == _casa.getValorInverso():
-                        if self.grid[row+2][column - 2].getValor() == Casa().NONE:
-                            self.grid[row][column].setCor(self.RED)
-                            _flag = True
-                    if row < 6 and column < 6 and self.grid[row][column].getValor() == _casa.getValor() and self.grid[row + 1][column + 1].getValor() == _casa.getValorInverso():
-                        if self.grid[row+2][column + 2].getValor() == Casa().NONE:
-                            self.grid[row][column].setCor(self.RED)
-                            _flag = True
-        return _flag
+        if row > 1 and column > 1:
+            if self.grid[row-1][column-1].getValor() == _casa.getValorInverso() and self.grid[row-2][column-2].getValor() == Casa().NONE:
+                self.grid[row][column].setCor(self.RED)
+                return True
+        if row > 1 and column < 6:
+            if self.grid[row-1][column+1].getValor() == _casa.getValorInverso() and self.grid[row-2][column+2].getValor() == Casa().NONE:
+                self.grid[row][column].setCor(self.RED)
+                return True
+        if row < 6 and column > 1:
+            if self.grid[row+1][column-1].getValor() == _casa.getValorInverso() and self.grid[row+2][column-2].getValor() == Casa().NONE:
+                self.grid[row][column].setCor(self.RED)
+                return True
+        if row < 6 and column < 6:
+            if self.grid[row+1][column+1].getValor() == _casa.getValorInverso() and self.grid[row+2][column+2].getValor() == Casa().NONE:
+                self.grid[row][column].setCor(self.RED)
+                return True
 
 
+    def eating(self, last_row,last_column, row, column, white_turn):
+        if white_turn:
+            if self.grid[row][column].getValor() == Casa().NONE and row == last_row - 2 and last_row > 1:
+                if column == last_column - 2 and last_column > 1:
+                    if self.grid[last_row-1][last_column-1].getValor() == Casa.BLACK:
+                        self.grid[row][column].setValor(Casa().WHITE)
+                        self.grid[last_row][last_column].setValor(Casa().NONE)
+                        self.grid[last_row - 1][last_column - 1].setValor(Casa().NONE)
+                        return True
+                if column == last_column + 2 and last_column < 6:
+                    if self.grid[last_row-1][last_column+1].getValor() == Casa.BLACK:
+                        self.grid[row][column].setValor(Casa().WHITE)
+                        self.grid[last_row][last_column].setValor(Casa().NONE)
+                        self.grid[last_row - 1][last_column + 1].setValor(Casa().NONE)
+                        return True
+        else:
+             if self.grid[row][column].getValor() == Casa().NONE  and last_row < 6 and row == last_row + 2:
+                if column == last_column - 2  and last_column > 1:
+                    if self.grid[last_row+1][last_column-1].getValor() == Casa.WHITE:
+                        self.grid[row][column].setValor(Casa().BLACK)
+                        self.grid[last_row][last_column].setValor(Casa().NONE)
+                        self.grid[last_row + 1][last_column - 1].setValor(Casa().NONE)
+                        return True
+                if column == last_column + 2  and last_column < 6:
+                    if self.grid[last_row+1][last_column+1].getValor() == Casa.WHITE:
+                        self.grid[row][column].setValor(Casa().BLACK)
+                        self.grid[last_row][last_column].setValor(Casa().NONE)
+                        self.grid[last_row + 1][last_column + 1].setValor(Casa().NONE)
+                        return True
+        return False
 
-
-
-
+    def eatingAfterEating(self, last_row, last_column, row, column, white_turn):
+        if white_turn:
+            _casa = Casa(Casa().WHITE)
+        else:    
+            _casa = Casa(Casa().BLACK)
+        if last_row > 1 and last_column > 1:
+            if self.grid[last_row-1][last_column-1].getValor() == _casa.getValorInverso() and self.grid[last_row-2][last_column-2].getValor() == Casa().NONE:
+                if column == last_column - 2 and row == last_row - 2:
+                    self.grid[row][column].setValor(_casa.getValor())
+                    self.grid[last_row][last_column].setValor(Casa().NONE)
+                    self.grid[last_row - 1][last_column - 1].setValor(Casa().NONE)
+                    return True
+        if last_row > 1 and last_column < 6:
+            if self.grid[last_row-1][last_column+1].getValor() == _casa.getValorInverso() and self.grid[last_row-2][last_column+2].getValor() == Casa().NONE:
+                if column == last_column - 2 and row == last_row + 2:
+                    self.grid[row][column].setValor(_casa.getValor())
+                    self.grid[last_row][last_column].setValor(Casa().NONE)
+                    self.grid[last_row - 1][last_column + 1].setValor(Casa().NONE)
+                    return True
+        if last_row < 6 and last_column > 1:
+            if self.grid[last_row+1][last_column-1].getValor() == _casa.getValorInverso() and self.grid[last_row+2][last_column-2].getValor() == Casa().NONE:
+                if column == last_column + 2 and row == last_row - 2:
+                    self.grid[row][column].setValor(_casa.getValor())
+                    self.grid[last_row][last_column].setValor(Casa().NONE)
+                    self.grid[last_row + 1][last_column - 1].setValor(Casa().NONE)
+                    return True
+        if last_row < 6 and last_column < 6:
+            if self.grid[last_row+1][last_column+1].getValor() == _casa.getValorInverso() and self.grid[last_row+2][last_column+2].getValor() == Casa().NONE:
+                if column == last_column + 2 and row == last_row + 2:
+                    self.grid[row][column].setValor(_casa.getValor())
+                    self.grid[last_row][last_column].setValor(Casa().NONE)
+                    self.grid[last_row + 1][last_column + 1].setValor(Casa().NONE)
+                    return True
+        return False
 
