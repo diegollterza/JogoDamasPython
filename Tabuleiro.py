@@ -90,19 +90,15 @@ class Tabuleiro:
             _casa = Casa(Casa().BLACK)
         if row > 1 and column > 1:
             if self.grid[row-1][column-1].getValor() == _casa.getValorInverso() and self.grid[row-2][column-2].getValor() == Casa().NONE:
-                self.grid[row][column].setCor(self.RED)
                 return True
         if row > 1 and column < 6:
             if self.grid[row-1][column+1].getValor() == _casa.getValorInverso() and self.grid[row-2][column+2].getValor() == Casa().NONE:
-                self.grid[row][column].setCor(self.RED)
                 return True
         if row < 6 and column > 1:
             if self.grid[row+1][column-1].getValor() == _casa.getValorInverso() and self.grid[row+2][column-2].getValor() == Casa().NONE:
-                self.grid[row][column].setCor(self.RED)
                 return True
         if row < 6 and column < 6:
             if self.grid[row+1][column+1].getValor() == _casa.getValorInverso() and self.grid[row+2][column+2].getValor() == Casa().NONE:
-                self.grid[row][column].setCor(self.RED)
                 return True
 
 
@@ -142,33 +138,30 @@ class Tabuleiro:
             _casa = Casa(Casa().WHITE)
         else:    
             _casa = Casa(Casa().BLACK)
-        if last_row > 1 and last_column > 1:
-            if self.grid[last_row-1][last_column-1].getValor() == _casa.getValorInverso() and self.grid[last_row-2][last_column-2].getValor() == Casa().NONE:
-                if column == last_column - 2 and row == last_row - 2:
-                    self.grid[row][column].setValor(_casa.getValor())
-                    self.grid[last_row][last_column].setValor(Casa().NONE)
-                    self.grid[last_row - 1][last_column - 1].setValor(Casa().NONE)
-                    return True
-        if last_row > 1 and last_column < 6:
-            if self.grid[last_row-1][last_column+1].getValor() == _casa.getValorInverso() and self.grid[last_row-2][last_column+2].getValor() == Casa().NONE:
-                if column == last_column - 2 and row == last_row + 2:
-                    self.grid[row][column].setValor(_casa.getValor())
-                    self.grid[last_row][last_column].setValor(Casa().NONE)
-                    self.grid[last_row - 1][last_column + 1].setValor(Casa().NONE)
-                    return True
-        if last_row < 6 and last_column > 1:
-            if self.grid[last_row+1][last_column-1].getValor() == _casa.getValorInverso() and self.grid[last_row+2][last_column-2].getValor() == Casa().NONE:
-                if column == last_column + 2 and row == last_row - 2:
-                    self.grid[row][column].setValor(_casa.getValor())
-                    self.grid[last_row][last_column].setValor(Casa().NONE)
-                    self.grid[last_row + 1][last_column - 1].setValor(Casa().NONE)
-                    return True
-        if last_row < 6 and last_column < 6:
-            if self.grid[last_row+1][last_column+1].getValor() == _casa.getValorInverso() and self.grid[last_row+2][last_column+2].getValor() == Casa().NONE:
-                if column == last_column + 2 and row == last_row + 2:
-                    self.grid[row][column].setValor(_casa.getValor())
-                    self.grid[last_row][last_column].setValor(Casa().NONE)
-                    self.grid[last_row + 1][last_column + 1].setValor(Casa().NONE)
-                    return True
+        if self.grid[row][column].getValor() == Casa().NONE:
+        	if row == last_row - 2 and column == last_column - 2:
+        		if self.grid[last_row - 1][last_column - 1].getValor() == _casa.getValorInverso():
+					self.grid[row][column].setValor(_casa.getValor())
+					self.grid[last_row][last_column].setValor(Casa().NONE)
+					self.grid[last_row - 1][last_column - 1].setValor(Casa().NONE)
+					return True
+        	if row == last_row - 2 and column == last_column + 2:
+				if self.grid[last_row - 1][last_column + 1].getValor() == _casa.getValorInverso():
+					self.grid[row][column].setValor(_casa.getValor())
+					self.grid[last_row][last_column].setValor(Casa().NONE)
+					self.grid[last_row - 1][last_column + 1].setValor(Casa().NONE)
+					return True
+        	if row == last_row + 2 and column == last_column - 2:
+				if self.grid[last_row + 1][last_column - 1].getValor() == _casa.getValorInverso():
+					self.grid[row][column].setValor(_casa.getValor())
+					self.grid[last_row][last_column].setValor(Casa().NONE)
+					self.grid[last_row + 1][last_column - 1].setValor(Casa().NONE)
+					return True
+        	if row == last_row + 2 and column == last_column + 2:
+				if self.grid[last_row + 1][last_column + 1].getValor() == _casa.getValorInverso():
+					self.grid[row][column].setValor(_casa.getValor())
+					self.grid[last_row][last_column].setValor(Casa().NONE)
+					self.grid[last_row + 1][last_column + 1].setValor(Casa().NONE)
+					return True
         return False
 

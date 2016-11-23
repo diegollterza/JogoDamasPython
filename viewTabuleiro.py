@@ -75,21 +75,22 @@ class viewTabuleiro:
                                     self.last_column = column
                                     self.first_click = False
                                     self.tabuleiro.canContinueEating(row, column, self.white_turn)
-
+                                else:
+                                	self.tabuleiro.getGrid[self.last_eated[0]][self.last_eated[1]].setCor(self.RED)
                         else:
                             if self.tabuleiro.hasToEat(self.white_turn) and not self.reEating:
                                 if self.tabuleiro.eating(self.last_row,self.last_column,row,column,self.white_turn):
                                     if self.tabuleiro.canContinueEating(row, column, self.white_turn):
                                         self.reEating = True
                                         self.last_eated[0] = row
-                                        self.last_eated[1] = row
+                                        self.last_eated[1] = column
                                     else:
                                         self.white_turn = False
                             elif self.reEating:
                                 if self.tabuleiro.eatingAfterEating(self.last_row,self.last_column,row,column,self.white_turn):
                                     if self.tabuleiro.canContinueEating(row, column, self.white_turn):
                                         self.last_eated[0] = row
-                                        self.last_eated[1] = row
+                                        self.last_eated[1] = column
                                     else:
                                         self.white_turn = False
                                         self.reEating = False
@@ -101,7 +102,6 @@ class viewTabuleiro:
                                         self.white_turn = False
                             self.first_click = True
                             self.tabuleiro.redraw() 
-                    
 
                     #movimento das pecas pretas
                     else:
@@ -127,7 +127,7 @@ class viewTabuleiro:
                                     if self.tabuleiro.canContinueEating(row, column, self.white_turn):
                                         self.reEating = True
                                         self.last_eated[0] = row
-                                        self.last_eated[1] = row
+                                        self.last_eated[1] = column
                                     else:
                                         self.white_turn = True
                             elif self.reEating:
@@ -135,7 +135,7 @@ class viewTabuleiro:
                                     if self.tabuleiro.canContinueEating(row, column, self.white_turn):
                                         self.reEating = True
                                         self.last_eated[0] = row
-                                        self.last_eated[1] = row
+                                        self.last_eated[1] = column
                                     else:
                                         self.white_turn = True
                                         self.reEating = False    
