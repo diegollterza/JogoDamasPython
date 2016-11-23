@@ -10,6 +10,9 @@ class Casa:
     NONE = 0
     valor = 0
 
+    def __init__(self, valor = 0):
+        self.valor = valor
+        
     def setPeca(self,peca):
         self.peca = peca
 
@@ -33,3 +36,11 @@ class Casa:
 
     def getValor(self):
         return self.valor
+    
+    def getValorInverso(self):
+        _valor = 0
+        if self.valor == self.WHITE:
+            _valor = self.BLACK
+        elif self.valor == self.BLACK:
+            _valor = self.WHITE 
+        return _valor

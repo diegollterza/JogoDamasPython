@@ -32,7 +32,7 @@ class viewTabuleiro:
         # Largura e altura da tela
         WINDOW_SIZE = [8*83, 8*83]
         screen = pygame.display.set_mode(WINDOW_SIZE)
-		
+        screen.fill(self.BLACK)
         # Titulo
         pygame.display.set_caption("Don't be a drag, just be a queen")
 
@@ -59,79 +59,75 @@ class viewTabuleiro:
                     if self.white_turn:
                         #primeiro click do mouse, seleciona a peca a ser movimentada
                         if self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE and self.first_click:
-                            self.last_cor = self.tabuleiro.getGrid[row][column].getCor()
+                            self.tabuleiro.hasToEat(self.white_turn)
                             self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
                             self.last_row = row
                             self.last_column = column
                             self.first_click = False
-                        #segundo click do mouse, tenta uma jogada
-                        elif not self.first_click:
-                            #jogada simples sem obstrucao nem comer peca
-                            if row == self.last_row - 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
-                                if column == self.last_column - 1 or column == self.last_column + 1:
-                                    self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
-                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
-                                    self.white_turn = False
-                            #verifica a possibilidade de comer a peca adversaria
-                            if row == self.last_row - 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
-                                if column == self.last_column - 2:
-                                    self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
-                                    self.tabuleiro.getGrid[self.last_row - 1][self.last_column - 1].setValor(Casa().NONE)
-                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
-                                    self.white_turn = False
-                                if column == self.last_column + 2:
-                                    self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
-                                    self.tabuleiro.getGrid[self.last_row - 1][self.last_column + 1].setValor(Casa().NONE)
-                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
-                                    self.white_turn = False
+                    
 
+                        elif not self.first_click:
+                            if self.tabuleiro.hasToEat(self.white_turn):
+                                if row == self.last_row - 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
+
+                                    if column == self.last_column - 2 and self.tabuleiro.getGrid[self.last_row-1][self.last_column-1].getValor() == Casa().BLACK:
+                                        self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
+                                        self.tabuleiro.getGrid[self.last_row -1][self.last_column - 1].setValor(Casa().NONE)
+                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                        if not self.tabuleiro.canContinueEating:
+                                            self.white_turn = False
+
+                                    if column == self.last_column + 2 and self.tabuleiro.getGrid[self.last_row-1][self.last_column+1].getValor() == Casa().BLACK:
+                                        self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
+                                        self.tabuleiro.getGrid[self.last_row - 1][self.last_column + 1].setValor(Casa().NONE)
+                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                        if not self.tabuleiro.canContinueEating:
+                                            self.white_turn = False
+                            else:
+                                if row == self.last_row - 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
+                                    if column == self.last_column - 1 or column == self.last_column + 1:
+                                        self.tabuleiro.getGrid[row][column].setValor(Casa().WHITE)
+                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                        self.white_turn = False
                             self.first_click = True
-                            self.tabuleiro.getGrid[self.last_row][self.last_column].setCor(self.last_cor)
+                            self.tabuleiro.redraw() 
                     
 
                     #movimento das pecas pretas
                     else:
                         if self.tabuleiro.getGrid[row][column].getValor() == Casa().BLACK and self.first_click:
-                            self.last_cor = self.tabuleiro.getGrid[row][column].getCor()
+                            self.tabuleiro.hasToEat(self.white_turn)
                             self.tabuleiro.getGrid[row][column].setCor(self.GREEN)
                             self.last_row = row
                             self.last_column = column
                             self.first_click = False
+                    
 
                         elif not self.first_click:
+                            if self.tabuleiro.hasToEat(self.white_turn):
+                                if row == self.last_row + 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
 
-                            if row == self.last_row + 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
+                                    if column == self.last_column - 2 and self.tabuleiro.getGrid[self.last_row+1][self.last_column-1].getValor() == Casa().WHITE:
+                                        self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
+                                        self.tabuleiro.getGrid[self.last_row + 1][self.last_column - 1].setValor(Casa().NONE)
+                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                        self.white_turn = True
 
-                                if column == self.last_column - 1 or column == self.last_column + 1:
-                                    self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
-                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
-                                    self.white_turn = True
-
-                            if row == self.last_row + 2 and self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
-
-                                if column == self.last_column - 2:
-                                    self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
-                                    self.tabuleiro.getGrid[self.last_row + 1][self.last_column - 1].setValor(Casa().NONE)
-                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
-                                    self.white_turn = True
-
-                                if column == self.last_column + 2:
-                                    self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
-                                    self.tabuleiro.getGrid[self.last_row + 1][self.last_column + 1].setValor(Casa().NONE)
-                                    self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
-                                    self.white_turn = True
-
+                                    if column == self.last_column + 2 and self.tabuleiro.getGrid[self.last_row+1][self.last_column+1].getValor() == Casa().WHITE:
+                                        self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
+                                        self.tabuleiro.getGrid[self.last_row + 1][self.last_column + 1].setValor(Casa().NONE)
+                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                        self.white_turn = True
+                            else:
+                                if row == self.last_row + 1 and  self.tabuleiro.getGrid[row][column].getValor() == Casa().NONE:
+                                    if column == self.last_column - 1 or column == self.last_column + 1:
+                                        self.tabuleiro.getGrid[row][column].setValor(Casa().BLACK)
+                                        self.tabuleiro.getGrid[self.last_row][self.last_column].setValor(Casa().NONE)
+                                        self.white_turn = True
                             self.first_click = True
-                            self.tabuleiro.getGrid[self.last_row][self.last_column].setCor(self.last_cor) 
-                              
-            if self.first_click:
-                self.tabuleiro.redraw()
-            self.tabuleiro.hasToEat(self.white_turn)          
-            # background
-            screen.fill(self.BLACK)
+                            self.tabuleiro.redraw()          
 
-
-            # Desenha os quadrinhos
+            # Redraw
             for row in range(self.tabuleiro.getRows()):
                 for column in range(self.tabuleiro.getColumns()):
                     pygame.draw.rect(screen,
@@ -140,9 +136,6 @@ class viewTabuleiro:
                                           Casa().getAltura() * row,
                                           Casa().getLargura(),
                                           Casa().getAltura()])
-
-                    #redraw das pecas
-
                     if self.tabuleiro.getGrid[row][column].getValor() == Casa().BLACK:
     					screen.blit(self.PecaPreta, (Casa().getLargura() * column, Casa().getAltura() * row))
                     if self.tabuleiro.getGrid[row][column].getValor() == Casa().WHITE:
